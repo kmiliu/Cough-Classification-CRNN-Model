@@ -7,6 +7,8 @@ A machine learning project for COVID-19 detection using respiratory sounds (brea
 > 🎧 **Data:** 1,398 samples of breathing, coughing, and counting sounds from global volunteers  
 > 🧠 **Model:** CRNN (CNN + BiGRU) trained with Focal Loss to handle class imbalance
 
+**Original Dataset:** [Corona Hack Respiratory Sound Dataset on Kaggle](https://www.kaggle.com/datasets/praveengovi/coronahack-respiratory-sound-dataset)
+
 ## Table of Contents
 
 - [Project Overview](#project-overview)
