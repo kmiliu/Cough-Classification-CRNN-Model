@@ -1,0 +1,16 @@
+{
+    "a": 19,
+    "cough": true,
+    "covid_status": "resp_illness_not_identified",
+    "dT": "web",
+    "ep": "y",
+    "fV": 2,
+    "g": "male",
+    "l_c": "India",
+    "l_l": "Bubaneswar",
+    "l_s": "Odisha",
+    "rU": "n",
+    "st": true,
+    "test_status": "na",
+    "um": "n"
+}

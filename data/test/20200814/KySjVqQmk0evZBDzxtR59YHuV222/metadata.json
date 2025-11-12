@@ -1,0 +1,17 @@
+{
+    "a": 19,
+    "cold": true,
+    "cough": true,
+    "covid_status": "no_resp_illness_exposed",
+    "dT": "web",
+    "ep": "y",
+    "fV": 2,
+    "g": "male",
+    "l_c": "India",
+    "l_l": "Bellari",
+    "l_s": "Karnataka",
+    "loss_of_smell": true,
+    "rU": "n",
+    "st": true,
+    "um": "n"
+}

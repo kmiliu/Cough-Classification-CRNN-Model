@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# Data files (large)
+data/train/**/*.wav
+data/test/**/*.wav
+output/processed_audio/**/*.wav
+output/filtered_audio/**/*.wav
+output/processed_audio_augmented/**/*.wav
+output/processed_audio_clean/**/*.wav
+
+# CSV files (optional - adjust based on size)
+# Uncomment if these are too large to commit
+# output/*.csv
+# output/**/*.csv
+
+# Model files (large)
+*.keras
+*.h5
+*.pkl
+*.joblib
+
+# Temporary files
+*.tmp
+*.log
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db

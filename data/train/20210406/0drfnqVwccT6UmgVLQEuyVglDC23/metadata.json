@@ -1,0 +1,19 @@
+{
+    "a": 35,
+    "covid_status": "positive_mild",
+    "dT": "web",
+    "diarrhoea": true,
+    "ep": "y",
+    "fV": 2,
+    "fever": true,
+    "ftg": true,
+    "g": "male",
+    "l_c": "India",
+    "l_s": "Karnataka",
+    "loss_of_smell": true,
+    "mp": true,
+    "rU": "n",
+    "st": true,
+    "test_status": "p",
+    "um": "n"
+}

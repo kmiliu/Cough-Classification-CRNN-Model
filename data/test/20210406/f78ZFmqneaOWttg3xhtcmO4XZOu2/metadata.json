@@ -1,0 +1,16 @@
+{
+    "a": 27,
+    "cough": true,
+    "covid_status": "healthy",
+    "dT": "web",
+    "ep": "y",
+    "fV": 2,
+    "g": "male",
+    "l_c": "India",
+    "l_s": "Karnataka",
+    "rU": "n",
+    "smoker": true,
+    "st": true,
+    "test_status": "n",
+    "um": "n"
+}

@@ -1,0 +1,17 @@
+{
+    "a": 28,
+    "cold": true,
+    "covid_status": "positive_mild",
+    "dT": "web",
+    "ep": "y",
+    "fV": 2,
+    "g": "male",
+    "l_c": "India",
+    "l_l": "Bangalore",
+    "l_s": "Karnataka",
+    "mp": true,
+    "rU": "n",
+    "smoker": true,
+    "test_status": "p",
+    "um": "n"
+}

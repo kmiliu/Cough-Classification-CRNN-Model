@@ -1,0 +1,16 @@
+{
+    "a": 22,
+    "asthma": true,
+    "cough": true,
+    "covid_status": "resp_illness_not_identified",
+    "dT": "web",
+    "ep": "y",
+    "fV": 2,
+    "g": "male",
+    "l_c": "India",
+    "l_l": "Siliguri",
+    "l_s": "West Bengal",
+    "rU": "n",
+    "smoker": true,
+    "um": "n"
+}

@@ -1,0 +1,22 @@
+{
+    "a": 62,
+    "bd": true,
+    "cough": true,
+    "covid_status": "positive_mild",
+    "dT": "web",
+    "diabetes": true,
+    "ep": "y",
+    "fV": 2,
+    "fever": true,
+    "g": "male",
+    "ihd": true,
+    "l_c": "India",
+    "l_l": "Mumbai",
+    "l_s": "Maharashtra",
+    "loss_of_smell": true,
+    "pneumonia": true,
+    "rU": "n",
+    "st": true,
+    "test_status": "p",
+    "um": "n"
+}

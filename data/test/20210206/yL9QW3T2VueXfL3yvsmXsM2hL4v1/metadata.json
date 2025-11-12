@@ -1,0 +1,19 @@
+{
+    "a": 20,
+    "cold": true,
+    "covid_status": "positive_mild",
+    "dT": "web",
+    "ep": "y",
+    "fV": 2,
+    "ftg": true,
+    "g": "male",
+    "l_c": "United States",
+    "l_l": "Phoenix",
+    "l_s": "Arizona",
+    "loss_of_smell": true,
+    "mp": true,
+    "rU": "n",
+    "st": true,
+    "test_status": "p",
+    "um": "n"
+}

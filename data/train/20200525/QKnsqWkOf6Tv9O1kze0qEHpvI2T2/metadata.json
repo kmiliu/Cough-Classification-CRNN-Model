@@ -1,0 +1,15 @@
+{
+    "a": 39,
+    "cough": true,
+    "covid_status": "resp_illness_not_identified",
+    "dT": "web",
+    "ep": "y",
+    "fV": 2,
+    "fever": true,
+    "g": "male",
+    "l_c": "Japan",
+    "l_s": "Kyoto",
+    "pneumonia": true,
+    "rU": "n",
+    "smoker": true
+}

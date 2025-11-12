@@ -1,0 +1,20 @@
+{
+    "a": 49,
+    "cold": true,
+    "cough": true,
+    "covid_status": "positive_mild",
+    "dT": "web",
+    "diabetes": true,
+    "ep": "y",
+    "fV": 2,
+    "fever": true,
+    "g": "female",
+    "ht": true,
+    "l_c": "India",
+    "l_l": "Mumbai ",
+    "l_s": "Maharashtra",
+    "mp": true,
+    "rU": "n",
+    "test_status": "p",
+    "um": "n"
+}

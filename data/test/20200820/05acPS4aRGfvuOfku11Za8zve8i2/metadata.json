@@ -1,0 +1,16 @@
+{
+    "a": 22,
+    "cold": true,
+    "cough": true,
+    "covid_status": "positive_mild",
+    "dT": "web",
+    "ep": "y",
+    "fV": 2,
+    "g": "male",
+    "l_c": "India",
+    "l_l": "LEAP-TEST",
+    "l_s": "Karnataka",
+    "rU": "n",
+    "st": true,
+    "um": "n"
+}
