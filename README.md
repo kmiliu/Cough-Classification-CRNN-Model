@@ -83,6 +83,7 @@ The `Corona-Hack-Respiratory-Sound-Metadata.csv` contains:
 CoronaHack-Respiratory-Sound-Dataset/
 ├── README.md                                    # This file
 ├── Corona-Hack-Respiratory-Sound-Metadata.csv  # Main metadata file
+├── junk_archive.tar.gz                         # Archived experimental code and outputs
 │
 ├── coding/                                      # Source code
 │   ├── clean.py                                # Data cleaning utilities
@@ -133,7 +134,7 @@ CoronaHack-Respiratory-Sound-Dataset/
     │   ├── test_predictions_f1opt_v2.csv       # Model predictions on test set
     │   └── report.ipynb
     │
-    └── junk_archive.tar.gz                      # Archived experimental code and outputs
+    └── filter_log.csv                          # Audio quality filtering log
 ```
 
 ---
