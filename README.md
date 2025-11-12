@@ -1,6 +1,11 @@
 # Corona Hack Respiratory Sound Dataset
 
+## Introduction
 A machine learning project for COVID-19 detection using respiratory sounds (breathing, coughing, and counting) collected from volunteers worldwide. This project uses deep learning models (CRNN and baseline ML classifiers) to classify audio samples as healthy or COVID-positive.
+
+> 🚀 **Goal:** Detect COVID-19 infection from respiratory sounds using deep learning  
+> 🎧 **Data:** 1,398 samples of breathing, coughing, and counting sounds from global volunteers  
+> 🧠 **Model:** CRNN (CNN + BiGRU) trained with Focal Loss to handle class imbalance
 
 ## Table of Contents
 
@@ -86,13 +91,7 @@ CoronaHack-Respiratory-Sound-Dataset/
 │   ├── generate_augmented_train.py             # Data augmentation
 │   ├── generate_model_input_clean.py           # Model input preparation
 │   ├── train_crnn_clean1.py through train_crnn_clean5.py  # CRNN model variants
-│   ├── train_ml_baseline_clean.py              # Baseline ML models
-│   │
-│   └── junk/                                   # Archived/experimental code
-│       ├── extract_features.py
-│       ├── merge_features_with_metadata.py
-│       └── cnn/
-│           └── train_cnn_crnn.py
+│   └── train_ml_baseline_clean.py              # Baseline ML models
 │
 ├── data/                                       # Audio dataset
 │   ├── train/                                  # Training data (organized by date)
@@ -134,12 +133,7 @@ CoronaHack-Respiratory-Sound-Dataset/
     │   ├── test_predictions_f1opt_v2.csv       # Model predictions on test set
     │   └── report.ipynb
     │
-    ├── filter_log.csv                          # Audio quality filtering log
-    │
-    └── junk/                                   # Archived outputs
-        ├── features.csv
-        ├── merged_dataset.csv
-        └── ...
+    └── junk_archive.tar.gz                      # Archived experimental code and outputs
 ```
 
 ---
@@ -378,7 +372,7 @@ Open the Jupyter notebooks:
 
 ## Notes
 
-- The `coding/junk/` directory contains archived and experimental code that may be deprecated
+- Archived experimental code and outputs are stored in `junk_archive.tar.gz` to keep the repository clean
 - Model training requires significant computational resources (GPU recommended)
 - Audio data is organized by collection date for temporal analysis
 - Metadata includes extensive health and demographic information for future stratified analysis
