@@ -157,14 +157,28 @@ def main():
         detected = find_latest_model_in_output()
         if detected is not None:
             model_path = detected
-            st.info(f"Auto-detected model: `{model_path}`")
+            # show only folder/filename to avoid exposing absolute user paths
+            st.info(f"Auto-detected model: `{model_path.parent.name}/{model_path.name}`")
 
     model = None
     input_len = len(feat_cols)
     model = load_model_from_path(model_path, input_len)
 
+    # runtime safety check: do a dry-run with zeros to ensure the loaded model accepts the feature shape
+    if model is not None:
+        try:
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            dummy = torch.zeros(1, 1, input_len, dtype=torch.float32).to(device)
+            with torch.no_grad():
+                _ = model(dummy)
+        except Exception as e:
+            st.error(f"Loaded model raised an error on a test input: {e}\nThe app will not run inference with this model. You can upload a compatible model file.")
+            model = None
+
     if model is None:
-        st.info(f"Model not found at `{model_path}`. You can upload a `.pt`/.pth file above or place `crnn_cough.pt` under `output/crnn_model_results_7/`.")
+        # Do not reveal absolute path. Show only a safe relative path suggestion.
+        suggested = f"{(BASE / 'output' / 'crnn_model_results_7').name}/crnn_cough.pt"
+        st.info(f"Model not found. You can upload a `.pt`/.pth file above or place `crnn_cough.pt` under `output/crnn_model_results_7/` (e.g. `{suggested}`).")
 
     if uploaded is not None:
         # save uploaded to a temp file

@@ -307,4 +307,88 @@ seaborn
 ### Installation
 
 ```bash
-pip install numpy pandas scikit-learn librosa tensorflow tqdm matplotlib se
+# Create (if needed) and activate a venv, then install requirements
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Demo (Streamlit)
+
+A lightweight Streamlit demo is provided to run inference with the V7 CRNN model locally. The demo auto-detects trained PyTorch model files under `output/` (it looks for `crnn_cough.pt` or any `.pt` file) and will prefer a user-uploaded `.pt` model if provided via the UI. The app uses the same feature-extraction pipeline as `coding/build_clean_features.py` and derives imputer/scaler stats from `output/model_input_clean_train.csv` so preprocessing matches training.
+
+Quick start (recommended, run from project root):
+
+1. Activate the project's venv (if not already active):
+
+```bash
+source .venv/bin/activate
+```
+
+2. Install demo dependencies (if you didn't already):
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Run the demo:
+
+```bash
+streamlit run app.py
+```
+
+Notes:
+- Place model files (e.g. `crnn_cough.pt`) under the `output/` folder (the app will search and pick the newest `.pt` automatically). Alternatively upload a `.pt` file in the web UI.
+- Model binaries are intentionally not tracked in git. If you want to include a model in the repo (not recommended for large files), add it and commit — otherwise keep them local or host in cloud storage and download at runtime.
+
+Docker (optional)
+
+Build and run the demo in Docker (the image does not include model binaries):
+
+```bash
+# build image
+docker build -t coronahack-demo:latest .
+
+# run (mount project output so model files are readable inside the container)
+docker run --rm -p 8501:8501 -v $(pwd)/output:/app/output coronahack-demo:latest
+```
+
+Open http://localhost:8501 after the container starts
+
+## Shareable release (quick way to share the demo)
+
+If you want to share a lightweight copy of this project with other collaborators (without datasets or model binaries), use the bundled release helper script which creates a zip that excludes large files and model weights.
+
+1. Make the zip (from the repository root):
+
+```bash
+# create a timestamped zip excluding data/, output/, and model binaries
+./scripts/make_shareable_release.sh
+# or provide a filename
+./scripts/make_shareable_release.sh coronahack-demo-share.zip
+```
+
+2. Share the generated zip (`coronahack-demo-share-YYYYMMDD-HHMMSS.zip`) via email, Drive, Dropbox, or upload as a GitHub Release asset.
+
+Notes:
+- The zip intentionally excludes `data/`, `output/`, `*.pt`, `*.pth`, and other large artifacts to keep the package small and privacy-preserving.
+- Instruct recipients how to obtain a model: either copy their own `crnn_cough.pt` into `output/crnn_model_results_7/` or upload a `.pt` via the Streamlit UI after starting the demo.
+- The app will not reveal absolute filesystem paths in the UI; only minimal relative names are displayed.
+
+Docker (recommended for reproducible sharing)
+
+If your collaborators have Docker, it's the easiest way to run the demo without installing Python dependencies.
+
+```bash
+# build the image (on a machine with Docker)
+docker build -t coronahack-demo:latest .
+
+# run the container, mounting local output so model files are visible
+docker run --rm -p 8501:8501 -v $(pwd)/output:/app/output coronahack-demo:latest
+```
+
+Open http://localhost:8501 in the browser after the container starts. The container image does not include model binaries, so mount or add them into `output/` as shown above.
+
+Privacy reminder
+
+- Do not add large or private model files to the zip. If you need to share a model with trusted collaborators, use secure file sharing (S3 with signed URL, private Drive link, or GitHub Releases) and instruct recipients to place the model into `output/crnn_model_results_7/` before running the demo.

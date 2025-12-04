@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CoronaHack Respiratory Sound — Demo Snapshot</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; max-width: 900px; margin: 40px auto; line-height: 1.5; color: #111; }
+    h1 { font-size: 1.6rem; }
+    pre { background:#f6f8fa; padding:12px; border-radius:6px; overflow:auto }
+    .card { border:1px solid #e1e4e8; padding:16px; border-radius:8px; margin-bottom:16px }
+    .muted { color:#555 }
+    .metric { font-size:1.6rem; font-weight:600 }
+  </style>
+</head>
+<body>
+  <h1>CoronaHack Respiratory Sound — Demo Snapshot</h1>
+  <p>This single-file HTML is a static, shareable snapshot of the demo. It is non-interactive — to run the live demo see instructions below.</p>
+
+  <div class="card">
+    <h2>Example audio</h2>
+    <p class="muted">A short sample audio included in the repository (if you share this file, make sure to include <code>tmp_audio.wav</code> in the same folder).</p>
+    <audio controls src="tmp_audio.wav">Your browser does not support the audio element.</audio>
+  </div>
+
+  <div class="card">
+    <h2>Precomputed model output (single example)</h2>
+    <p class="muted">This value was computed locally using the repository's CRNN V7 model and the same preprocessing pipeline used by the Streamlit demo.</p>
+    <p>Predicted probability (COVID): <span class="metric">0.277</span></p>
+    <p class="muted">Thresholded prediction (0.5): Negative</p>
+  </div>
+
+  <div class="card">
+    <h2>How to run the interactive demo</h2>
+    <ol>
+      <li>Download or clone the repo: <code>git clone https://github.com/kmiliu/CoronaHack-Respiratory-Sound-Dataset.git</code></li>
+      <li>Place a model file (e.g. <code>crnn_cough.pt</code>) under <code>output/crnn_model_results_7/</code>, or upload it in the web UI.</li>
+      <li>Create and activate the project's venv and install requirements:
+        <pre>python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt</pre>
+      </li>
+      <li>Run the demo:
+        <pre>streamlit run app.py
+# open http://localhost:8501</pre>
+      </li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Shareable package</h2>
+    <p class="muted">Use <code>./scripts/make_shareable_release.sh</code> to create a zip file that excludes datasets and model binaries. This ensures you can share the demo without private data.</p>
+  </div>
+
+  <footer class="muted">Generated snapshot — non-interactive. For the full interactive demo run the Streamlit app as instructed above.</footer>
+</body>
+</html>
