@@ -101,7 +101,7 @@ CoronaHack-Respiratory-Sound-Dataset/
 │   ├── build_clean_features.py                 # Feature extraction pipeline
 │   ├── generate_augmented_train.py             # Data augmentation
 │   ├── generate_model_input_clean.py           # Model input preparation
-│   ├── train_crnn_clean1.py through train_crnn_clean5.py  # CRNN model variants
+│   ├── train_crnn_clean7.py                     # CRNN model (final/main)
 │   └── train_ml_baseline_clean.py              # Baseline ML models
 │
 ├── data/                                       # Audio dataset
@@ -129,21 +129,14 @@ CoronaHack-Respiratory-Sound-Dataset/
     ├── processed_audio_augmented/              # Augmented audio samples
     │   └── train/
     │
-    ├── crnn_model_results_4/                   # CRNN Model Results (V1)
-    │   ├── best_crnn_focal_biGRU.keras         # Best model weights
-    │   ├── training_curves_crnn_focal_biGRU.png
-    │   ├── roc_curve_crnn_focal_biGRU.png
-    │   ├── pr_curve_crnn_focal_biGRU.png
-    │   └── report.ipynb
-    │
-    ├── crnn_model_results_5/                   # CRNN Model Results (V2 - Latest)
-    │   ├── best_crnn_focal_biGRU_v2.keras      # Best model weights
-    │   ├── training_curves_crnn_focal_biGRU_v2.png
-    │   ├── roc_curve_crnn_focal_biGRU_v2.png
-    │   ├── pr_curve_crnn_focal_biGRU_v2.png
-    │   ├── test_predictions_f1opt_v2.csv       # Model predictions on test set
-    │   └── report.ipynb
-    │
+  ├── crnn_model_results_7/                   # CRNN Model Results (V7 - Final)
+  │   ├── best_crnn_focal_biGRU_v7.keras      # Best model weights (V7)
+  │   ├── training_curves_crnn_focal_biGRU_v7.png
+  │   ├── roc_curve_crnn_focal_biGRU_v7.png
+  │   ├── pr_curve_crnn_focal_biGRU_v7.png
+  │   ├── test_predictions_f1opt_v7.csv       # Model predictions on test set
+  │   └── report.ipynb
+  │
     └── filter_log.csv                          # Audio quality filtering log
 ```
 
@@ -176,11 +169,11 @@ CoronaHack-Respiratory-Sound-Dataset/
 - Prepares input for ML/DL models
 - Handles class balancing
 
-### 6. **Model Training**
+-### 6. **Model Training**
 
-#### CRNN Models (`coding/train_crnn_clean1.py` - `train_crnn_clean5.py`)
-- Progressive iterations of Convolutional Recurrent Neural Networks
-- **Latest Model** (V2): `crnn_model_results_5/best_crnn_focal_biGRU_v2.keras`
+#### CRNN Model (`coding/train_crnn_clean7.py`)
+- Final Convolutional Recurrent Neural Network used for reported results
+- **Model (V7)**: results for the training run are in `output/crnn_model_results_7/`
 - Features:
   - Bidirectional GRU layers for temporal modeling
   - Focal loss for handling class imbalance
@@ -236,9 +229,9 @@ Raw audio files organized by collection date under `data/train/` and `data/test/
 
 ## Model Training
 
-### CRNN Model (Latest - V2)
+### CRNN Model (Final - V7)
 
-**Location**: `output/crnn_model_results_5/`
+**Location**: `output/crnn_model_results_7/`
 
 **Architecture**:
 - Convolutional layers for spatial feature extraction
@@ -252,13 +245,13 @@ Raw audio files organized by collection date under `data/train/` and `data/test/
 - Early stopping: Yes
 - Class weights: Computed automatically
 
-**Key Files**:
-- `best_crnn_focal_biGRU_v2.keras`: Trained model weights
-- `training_curves_crnn_focal_biGRU_v2.png`: Loss and accuracy during training
-- `roc_curve_crnn_focal_biGRU_v2.png`: Receiver Operating Characteristic curve
-- `pr_curve_crnn_focal_biGRU_v2.png`: Precision-Recall curve
-- `test_predictions_f1opt_v2.csv`: Model predictions on test set with F1-optimal threshold
-- `report.ipynb`: Detailed analysis notebook
+**Key Files** (example contents):
+- `best_crnn_focal_biGRU_v7.keras` (model weights)
+- `training_curves_crnn_focal_biGRU_v7.png` (loss/accuracy)
+- `roc_curve_crnn_focal_biGRU_v7.png` (ROC curve)
+- `pr_curve_crnn_focal_biGRU_v7.png` (PR curve)
+- `test_predictions_f1opt_v7.csv` (test predictions)
+- `report.ipynb` (analysis notebook)
 
 ### Baseline Models
 
@@ -274,7 +267,7 @@ Raw audio files organized by collection date under `data/train/` and `data/test/
 
 ## Results
 
-### CRNN Model V2 Highlights
+### CRNN Model V7 Highlights
 
 - **Input**: Audio spectral features + augmented training data
 - **Output**: Binary classification (COVID / Not COVID)
