@@ -116,6 +116,22 @@ def load_model_from_path(model_path: Path, input_len: int):
     return model
 
 
+def find_latest_model_in_output(pattern="crnn_cough.pt"):
+    """Search `output/` for model files matching pattern and return the newest Path or None."""
+    out_dir = BASE / "output"
+    if not out_dir.exists():
+        return None
+    candidates = list(out_dir.rglob(pattern))
+    if not candidates:
+        # also try any .pt files under output
+        candidates = list(out_dir.rglob("*.pt"))
+    if not candidates:
+        return None
+    # pick newest by mtime
+    candidates.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    return candidates[0]
+
+
 def main():
     st.title("CRNN V7 — Respiratory Sound Demo")
     st.write("Upload a cough/breathing audio file (wav/mp3/webm). The app extracts features and runs the trained V7 model.")
@@ -136,12 +152,19 @@ def main():
             f.write(model_file.read())
         model_path = tmp
 
+    # If user did not upload a model, try to auto-detect the newest model in output/
+    if model_file is None:
+        detected = find_latest_model_in_output()
+        if detected is not None:
+            model_path = detected
+            st.info(f"Auto-detected model: `{model_path}`")
+
     model = None
     input_len = len(feat_cols)
     model = load_model_from_path(model_path, input_len)
 
     if model is None:
-        st.info(f"Model not found at `{MODEL_PATH_DEFAULT}`. You can upload a `.pt`/.pth file above or place `crnn_cough.pt` under `output/crnn_model_results_7/`.")
+        st.info(f"Model not found at `{model_path}`. You can upload a `.pt`/.pth file above or place `crnn_cough.pt` under `output/crnn_model_results_7/`.")
 
     if uploaded is not None:
         # save uploaded to a temp file
