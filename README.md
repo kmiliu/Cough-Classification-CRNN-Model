@@ -7,12 +7,16 @@ A machine learning project for COVID-19 detection using respiratory sounds (brea
 > 🎧 **Data:** 1,398 samples of breathing, coughing, and counting sounds from global volunteers  
 > 🧠 **Model:** CRNN (CNN + BiGRU) trained with Focal Loss to handle class imbalance
 
-**Original Dataset:** [Corona Hack Respiratory Sound Dataset on Kaggle](https://www.kaggle.com/datasets/praveengovi/coronahack-respiratory-sound-dataset)
+### Original Dataset
+This work uses the Corona Hack Respiratory Sound Dataset originally published on Kaggle. Please see the original source for dataset license and detailed metadata:
+
+- [Corona Hack Respiratory Sound Dataset (Kaggle)](https://www.kaggle.com/datasets/praveengovi/coronahack-respiratory-sound-dataset)
 
 ## Table of Contents
 
 - [Project Overview](#project-overview)
 - [Dataset](#dataset)
+- [Original Dataset](#original-dataset)
 - [Project Structure](#project-structure)
 - [Key Components](#key-components)
 - [Data Processing Pipeline](#data-processing-pipeline)
@@ -306,111 +310,4 @@ seaborn
 ### Installation
 
 ```bash
-pip install numpy pandas scikit-learn librosa tensorflow tqdm matplotlib seaborn
-```
-
-### Python Version
-Python 3.8+
-
----
-
-## Usage
-
-### 1. **Data Cleaning**
-
-```bash
-python coding/clean.py
-```
-
-### 2. **Audio Quality Filtering**
-
-```bash
-python coding/filter_audio_quality.py
-```
-
-### 3. **Extract Features**
-
-```bash
-python coding/build_clean_features.py
-```
-
-### 4. **Data Augmentation**
-
-```bash
-python coding/generate_augmented_train.py
-```
-
-### 5. **Generate Model Input**
-
-```bash
-python coding/generate_model_input_clean.py
-```
-
-### 6. **Train CRNN Model**
-
-```bash
-python coding/train_crnn_clean5.py  # Latest version (V2)
-```
-
-### 7. **Train Baseline Models**
-
-```bash
-python coding/train_ml_baseline_clean.py
-```
-
-### 8. **View Results**
-
-Open the Jupyter notebooks:
-- `output/crnn_model_results_5/report.ipynb` - Detailed CRNN analysis
-
----
-
-## Model Selection Guide
-
-- **Use CRNN Model (V2)** if you need state-of-the-art deep learning performance
-- **Use Baseline Models** for interpretability and computational efficiency
-- Compare ROC curves in model results to evaluate at different thresholds
-
----
-
-## Notes
-
-- Archived experimental code and outputs are stored in `junk_archive.tar.gz` to keep the repository clean
-- Model training requires significant computational resources (GPU recommended)
-- Audio data is organized by collection date for temporal analysis
-- Metadata includes extensive health and demographic information for future stratified analysis
-
----
-
-## Future Enhancements
-
-1. Incorporate temporal patterns with collection dates
-2. Demographic-stratified analysis (age, gender, geographic region)
-3. Multi-task learning with symptom prediction
-4. Real-time inference implementation
-5. Explainability analysis (attention maps, LIME)
-6. Cross-validation and ensemble methods
-
----
-
-## Citation
-
-If you use this dataset or code in your research, please cite the Corona Hack initiative.
-
----
-
-## License
-
-Please refer to the original Corona Hack dataset repository for licensing information.
-
----
-
-## Contact & Support
-
-For questions about the dataset or methodology, refer to the Corona Hack initiative documentation.
-
----
-
-**Last Updated**: November 2025
-**Project Status**: Active
-**Latest Model**: CRNN V2 (crnn_model_results_5)
+pip install numpy pandas scikit-learn librosa tensorflow tqdm matplotlib se
