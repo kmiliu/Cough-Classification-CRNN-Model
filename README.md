@@ -7,10 +7,14 @@ A machine learning project for COVID-19 detection using respiratory sounds (brea
 > 🎧 **Data:** 1,398 samples of breathing, coughing, and counting sounds from global volunteers  
 > 🧠 **Model:** CRNN (CNN + BiGRU) trained with Focal Loss to handle class imbalance
 
-### Original Dataset
-This work uses the Corona Hack Respiratory Sound Dataset originally published on Kaggle. Please see the original source for dataset license and detailed metadata:
+### Original / External Datasets
+This project uses the following public datasets (raw audio is not included in this repository; please download from the dataset pages):
 
-- [Corona Hack Respiratory Sound Dataset (Kaggle)](https://www.kaggle.com/datasets/praveengovi/coronahack-respiratory-sound-dataset)
+- [Corona Hack Respiratory Sound Dataset — Kaggle (praveengovi)](https://www.kaggle.com/datasets/praveengovi/coronahack-respiratory-sound-dataset)
+- [COVID19 Cough Audio Classification — Kaggle (andrewmvd)](https://www.kaggle.com/datasets/andrewmvd/covid19-cough-audio-classification/data)
+- [COVID-19 Cough Sounds — Kaggle (pranaynandan63)](https://www.kaggle.com/datasets/pranaynandan63/covid-19-cough-sounds)
+
+Note: Large media files and dataset directories (audio/video) are excluded from this repository via `.gitignore` (for example: `data/**`, `output/**`, `*.wav`, `*.webm`). If you need a local copy of any dataset, download it from the dataset pages above and place the files under the `data/` directory locally (they are intentionally not tracked here).
 
 ## Table of Contents
 
