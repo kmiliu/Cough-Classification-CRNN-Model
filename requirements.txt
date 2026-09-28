@@ -1,8 +1,2 @@
-streamlit
-torch
-librosa
-numpy
-pandas
-scikit-learn
-matplotlib
-soundfile
+# Results browser only; no model or raw-data dependencies needed.
+streamlit>=1.40,<2

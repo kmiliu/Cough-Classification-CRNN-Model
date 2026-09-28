@@ -8,6 +8,7 @@ Train ML baselines on precomputed features (MFCC/Chroma/Spectral/ZCR).
 - Handles class imbalance (class_weight + threshold tuning)
 - Prints metrics + saves predictions
 """
+from pathlib import Path
 
 import os
 import numpy as np
@@ -19,7 +20,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.utils.class_weight import compute_class_weight
 
 # ===== Paths =====
-ROOT = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset"
+ROOT = str(Path(__file__).resolve().parents[1] / '')
 OUT_DIR = os.path.join(ROOT, "output", "model_results")
 os.makedirs(OUT_DIR, exist_ok=True)
 

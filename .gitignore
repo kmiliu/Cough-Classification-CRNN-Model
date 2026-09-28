@@ -69,3 +69,16 @@ output/processed_audio_clean/**/*.wav
 # OS files
 .DS_Store
 Thumbs.db
+
+# Local research data, generated artifacts, uploads, and release archives
+/data/
+/output/
+*.wav
+*.webm
+*.mp3
+*.pt
+*.pth
+*.bin
+*.zip
+*.tar.gz
+/tmp_*

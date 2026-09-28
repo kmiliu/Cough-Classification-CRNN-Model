@@ -1,10 +1,11 @@
+from pathlib import Path
 import pandas as pd
 import os
 
 # Paths
-TRAIN_CSV = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_input.csv"
-AUGMENT_LOG = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/features_augmented.csv"
-OUTPUT_CSV = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_input_augmented.csv"
+TRAIN_CSV = str(Path(__file__).resolve().parents[1] / 'output/model_input.csv')
+AUGMENT_LOG = str(Path(__file__).resolve().parents[1] / 'output/features_augmented.csv')
+OUTPUT_CSV = str(Path(__file__).resolve().parents[1] / 'output/model_input_augmented.csv')
 
 # Load original train data
 train_df = pd.read_csv(TRAIN_CSV)

@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 import numpy as np
 import pandas as pd
@@ -11,9 +12,9 @@ from sklearn.metrics import classification_report, roc_auc_score, roc_curve
 import matplotlib.pyplot as plt
 
 # === Paths ===
-TRAIN_CSV = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_input_clean_train.csv"
-TEST_CSV  = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_input_clean_test.csv"
-SAVE_DIR = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/crnn_model_results_3"
+TRAIN_CSV = str(Path(__file__).resolve().parents[1] / 'output/model_input_clean_train.csv')
+TEST_CSV  = str(Path(__file__).resolve().parents[1] / 'output/model_input_clean_test.csv')
+SAVE_DIR = str(Path(__file__).resolve().parents[1] / 'output/crnn_model_results_3')
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 # === Load data ===

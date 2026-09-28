@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 import numpy as np
 import pandas as pd
@@ -14,10 +15,14 @@ from imblearn.over_sampling import SMOTE
 from sklearn.utils.class_weight import compute_class_weight
 
 # === Paths ===
-TRAIN_CSV = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_input_clean_train.csv"
-TEST_CSV  = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_input_clean_test.csv"
-SAVE_DIR = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/crnn_model_results_5"
+TRAIN_CSV = str(Path(__file__).resolve().parents[1] / 'output/model_input_clean_train.csv')
+TEST_CSV  = str(Path(__file__).resolve().parents[1] / 'output/model_input_clean_test.csv')
+SAVE_DIR = str(Path(__file__).resolve().parents[1] / 'output/crnn_model_results_5')
 os.makedirs(SAVE_DIR, exist_ok=True)
+
+# Historical experiment: numeric metadata are included alongside audio features.
+# Test-set threshold optimization below is exploratory, not independent evaluation.
+# See README before reusing this training setup.
 
 # === Load data ===
 train = pd.read_csv(TRAIN_CSV)
@@ -114,7 +119,7 @@ fpr, tpr, thresholds_roc = roc_curve(y_test, y_pred_prob)
 # === PR Analysis ===
 precision, recall, thresholds_pr = precision_recall_curve(y_test, y_pred_prob)
 f1_scores = 2 * precision * recall / (precision + recall + 1e-8)
-best_thresh = thresholds_pr[np.argmax(f1_scores)]
+best_thresh = thresholds_pr[np.argmax(f1_scores[:-1])]
 best_f1 = np.max(f1_scores)
 pr_auc = auc(recall, precision)
 

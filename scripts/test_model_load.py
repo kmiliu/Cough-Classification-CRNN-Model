@@ -1,55 +1,34 @@
 #!/usr/bin/env python3
-"""scripts/test_model_load.py
-
-Simple script to detect the newest .pt in output/, load the CRNN model defined in
-app.py, and run a dummy forward pass to ensure compatibility.
-
-Exit codes:
-- 0: success
-- 2: no model found
-- 3: model load failed
-- 4: dry-run failed
-"""
-import sys
+"""Check a trusted local Keras checkpoint; this does not validate preprocessing or accuracy."""
+import argparse
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
 
-try:
-    import torch
-    import app
-except Exception as e:
-    print('Failed to import dependencies:', e)
-    sys.exit(3)
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('model', type=Path, help='Explicit path to a trusted .keras checkpoint')
+    parser.add_argument('--features', type=int, default=49, help='Expected feature count (recorded v2 run: 49)')
+    args = parser.parse_args()
+    if args.model.suffix != '.keras' or not args.model.is_file():
+        print('A local .keras checkpoint is required; none is bundled. PyTorch files are incompatible.')
+        return 2
+    if args.features < 1:
+        parser.error('--features must be positive')
+    try:
+        import numpy as np
+        import tensorflow as tf
+        model = tf.keras.models.load_model(args.model, compile=False, safe_mode=True)
+        if tuple(model.input_shape) != (None, args.features, 1):
+            raise ValueError('Checkpoint input shape does not match the declared feature count')
+        output = np.asarray(model(np.zeros((1, args.features, 1), dtype=np.float32), training=False))
+        if output.shape != (1, 1) or not np.isfinite(output).all() or not ((0 <= output) & (output <= 1)).all():
+            raise ValueError('Expected one finite sigmoid output per row')
+    except Exception as exc:
+        print(f'Checkpoint check failed ({type(exc).__name__}). Verify dependencies, architecture, and feature count.')
+        return 3
+    print('Keras load and shape check passed. Feature order, scaling, calibration, and accuracy remain unverified.')
+    return 0
 
-feats, med, mean_std = app.load_train_stats()
-print('Feature count:', len(feats))
 
-detected = app.find_latest_model_in_output()
-if detected is None:
-    print('No model detected under output/. Place a .pt file under output/ and try again.')
-    sys.exit(2)
-# Print only folder/filename to avoid exposing absolute paths
-print('Detected model:', f"{detected.parent.name}/{detected.name}")
-
-model = app.load_model_from_path(detected, len(feats))
-if not model:
-    print('Model load failed for:', f"{detected.parent.name}/{detected.name}")
-    sys.exit(3)
-print('Model loaded successfully')
-
-# Dry-run
-try:
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    dummy = torch.zeros(1,1,len(feats), dtype=torch.float32).to(device)
-    with torch.no_grad():
-        out = model(dummy)
-    print('Dry-run output shape:', getattr(out, 'shape', out))
-    print('Dry-run succeeded')
-except Exception as e:
-    print('Dry-run failed with error:', e)
-    sys.exit(4)
-
-print('OK')
-sys.exit(0)
+if __name__ == '__main__':
+    raise SystemExit(main())

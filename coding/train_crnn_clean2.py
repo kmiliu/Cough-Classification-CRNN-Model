@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 import numpy as np
 import pandas as pd
@@ -9,8 +10,8 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping
 import matplotlib.pyplot as plt
 
 # === Paths ===
-TRAIN_CSV = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_input_clean_train.csv"
-TEST_CSV  = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_input_clean_test.csv"
+TRAIN_CSV = str(Path(__file__).resolve().parents[1] / 'output/model_input_clean_train.csv')
+TEST_CSV  = str(Path(__file__).resolve().parents[1] / 'output/model_input_clean_test.csv')
 
 # === Load data ===
 train = pd.read_csv(TRAIN_CSV, encoding='utf-8')
@@ -115,6 +116,6 @@ plt.tight_layout()
 plt.show()
 
 # === Save model ===
-os.makedirs("/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_results", exist_ok=True)
-model.save("/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_results/crnn_model.h5")
+os.makedirs(str(Path(__file__).resolve().parents[1] / 'output/model_results'), exist_ok=True)
+model.save(str(Path(__file__).resolve().parents[1] / 'output/model_results/crnn_model.h5'))
 print("💾 Saved model to output/model_results/crnn_model.h5")

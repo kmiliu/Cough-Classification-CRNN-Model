@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 import librosa
 import numpy as np
@@ -6,9 +7,9 @@ import soundfile as sf
 from tqdm import tqdm
 
 # === Path settings ===
-INPUT_DIR = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/processed_audio"
-OUTPUT_DIR = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/filtered_audio"
-LOG_CSV = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/filter_log.csv"
+INPUT_DIR = str(Path(__file__).resolve().parents[1] / 'output/processed_audio')
+OUTPUT_DIR = str(Path(__file__).resolve().parents[1] / 'output/filtered_audio')
+LOG_CSV = str(Path(__file__).resolve().parents[1] / 'output/filter_log.csv')
 
 # === Thresholds for filtering ===
 MIN_DURATION = 0.5     # seconds

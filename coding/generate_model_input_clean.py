@@ -1,11 +1,12 @@
+from pathlib import Path
 import pandas as pd
 import os
 
 # === 路径配置 ===
-BASE_DIR = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output"
+BASE_DIR = str(Path(__file__).resolve().parents[1] / 'output')
 FEATURES_TRAIN = os.path.join(BASE_DIR, "features_train.csv")
 FEATURES_TEST = os.path.join(BASE_DIR, "features_test.csv")
-META_CSV = os.path.join("/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/Corona-Hack-Respiratory-Sound-Metadata.csv")
+META_CSV = os.path.join(str(Path(__file__).resolve().parents[1] / 'Corona-Hack-Respiratory-Sound-Metadata.csv'))
 
 OUTPUT_TRAIN = os.path.join(BASE_DIR, "model_input_clean_train.csv")
 OUTPUT_TEST = os.path.join(BASE_DIR, "model_input_clean_test.csv")

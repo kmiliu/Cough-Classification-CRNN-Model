@@ -1,0 +1,24 @@
+{
+  "source": "test_predictions_f1opt_v2.csv",
+  "sha256": "e98948da8aba66b6948ceb464b6b8534e890d0b102dae74fc81ac9628c77a65e",
+  "rows": 1925,
+  "positive_rows": 45,
+  "negative_rows": 1880,
+  "roc_auc": 0.9419267139479905,
+  "pr_auc_trapezoidal": 0.2453940457235184,
+  "positive_precision": 0.24705882352941178,
+  "positive_recall": 0.4666666666666667,
+  "positive_f1": 0.3230769230769231,
+  "accuracy": 0.9542857142857143,
+  "confusion_matrix_actual_by_predicted": [
+    [
+      1816,
+      64
+    ],
+    [
+      24,
+      21
+    ]
+  ],
+  "interpretation": "Historical predictions; labels use a threshold selected on the same test set. No independent evaluation or clinical validation is claimed."
+}
