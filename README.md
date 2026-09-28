@@ -1,394 +1,102 @@
-# Corona Hack Respiratory Sound Dataset
+# Respiratory Sound Classification with a CNN–BiGRU
 
-## Introduction
-A machine learning project for COVID-19 detection using respiratory sounds (breathing, coughing, and counting) collected from volunteers worldwide. This project uses deep learning models (CRNN and baseline ML classifiers) to classify audio samples as healthy or COVID-positive.
+An exploratory classification project combining pooled acoustic features, numeric metadata, and a Keras convolutional/recurrent model. The repository documents preprocessing, class-imbalance handling, and the limits of interpreting a historical evaluation.
 
-> 🚀 **Goal:** Detect COVID-19 infection from respiratory sounds using deep learning  
-> 🎧 **Data:** 1,398 samples of breathing, coughing, and counting sounds from global volunteers  
-> 🧠 **Model:** CRNN (CNN + BiGRU) trained with Focal Loss to handle class imbalance
+**Current demo:** a results browser backed by saved predictions. Live audio inference is unavailable because no matching trained checkpoint and preprocessing bundle are committed.
 
-### Original / External Datasets
-This project uses the following public datasets (raw audio is not included in this repository; please download from the dataset pages):
+![Historical precision–recall curve](output/crnn_model_results_5/pr_curve_crnn_focal_biGRU_v2.png)
 
-- [Corona Hack Respiratory Sound Dataset — Kaggle (praveengovi)](https://www.kaggle.com/datasets/praveengovi/coronahack-respiratory-sound-dataset)
-- [COVID19 Cough Audio Classification — Kaggle (andrewmvd)](https://www.kaggle.com/datasets/andrewmvd/covid19-cough-audio-classification/data)
-- [COVID-19 Cough Sounds — Kaggle (pranaynandan63)](https://www.kaggle.com/datasets/pranaynandan63/covid-19-cough-sounds)
+## Verified historical results
 
-Note: Large media files and dataset directories (audio/video) are excluded from this repository via `.gitignore` (for example: `data/**`, `output/**`, `*.wav`, `*.webm`). If you need a local copy of any dataset, download it from the dataset pages above and place the files under the `data/` directory locally (they are intentionally not tracked here).
+These values are recomputed from [the committed prediction CSV](output/crnn_model_results_5/test_predictions_f1opt_v2.csv), and agree with [the v2 report](output/crnn_model_results_5/report.ipynb). They describe the existing run, not a newly trained or independently validated model.
 
-## Table of Contents
+| Quantity | Value |
+| --- | ---: |
+| Prediction rows | 1,925 |
+| Positive / negative labels | 45 / 1,880 |
+| ROC-AUC | 0.9419 |
+| PR-AUC, trapezoidal integration | 0.2454 |
+| Positive-class precision | 0.2471 |
+| Positive-class recall | 0.4667 |
+| Positive-class F1 | 0.3231 |
 
-- [Project Overview](#project-overview)
-- [Dataset](#dataset)
-- [Original Dataset](#original-dataset)
-- [Project Structure](#project-structure)
-- [Key Components](#key-components)
-- [Data Processing Pipeline](#data-processing-pipeline)
-- [Model Training](#model-training)
-- [Results](#results)
-- [Dependencies](#dependencies)
-- [Usage](#usage)
+The recorded confusion matrix is **TN 1,816 · FP 64 · FN 24 · TP 21**. PR-AUC here is the area under the interpolated precision–recall curve, not average precision. A high ROC-AUC alone does not convey the low precision of the positive predictions.
 
----
+**Evaluation limitation:** `train_crnn_clean5.py` selects the F1-maximizing threshold using the same test labels subsequently reported in the classification summary. Those thresholded metrics are exploratory and optimistically selected, not an untouched held-out estimate. Prediction rows are not established as independent participants.
 
-## Project Overview
+## Inspect or run the results browser
 
-This project aims to develop an automated COVID-19 detection system using respiratory sound analysis. The approach combines:
+Recompute all aggregate metrics with Python 3.10+; no external packages, audio, or model are needed:
 
-- **Audio data collection**: Diverse respiratory sounds from healthy and COVID-positive individuals globally
-- **Feature engineering**: Extraction of audio features from raw WAV files
-- **Data augmentation**: Synthetic augmentation to increase training data diversity
-- **Model training**: CRNN (Convolutional Recurrent Neural Network) and baseline ML models
-- **Evaluation**: Comprehensive performance metrics including ROC curves and precision-recall curves
-
-### Key Statistics
-
-- **Metadata file**: `Corona-Hack-Respiratory-Sound-Metadata.csv` (1,398 rows)
-- **Audio types**: 9 categories per participant
-  - breathing-deep
-  - breathing-shallow
-  - cough-heavy
-  - cough-shallow
-  - counting-fast
-  - counting-normal
-  - vowel-a
-  - vowel-e
-  - vowel-o
-- **Geographic coverage**: Multi-country data (India, Canada, United States, Argentina, etc.)
-- **Health status categories**: healthy, covid_positive, respiratory_illness_not_identified, no_respiratory_illness_exposed
-
----
-
-## Dataset
-
-### Data Structure
-
-```
-data/
-├── train/          # Training audio samples (organized by collection date)
-│   ├── 20200413/
-│   ├── 20200415/
-│   └── ...
-└── test/           # Testing audio samples (organized by collection date)
-    ├── 20200803/
-    ├── 20200814/
-    └── ...
+```sh
+python scripts/summarize_results.py
+python -m unittest discover -s tests -v
 ```
 
-### Metadata Fields
+The [verified summary](output/crnn_model_results_5/verified_summary.json) includes the source CSV's SHA-256 digest for provenance.
 
-The `Corona-Hack-Respiratory-Sound-Metadata.csv` contains:
+For the interactive browser:
 
-- **User Information**: USER_ID, COUNTRY, AGE, GENDER, ENGLISH_PROFICIENCY
-- **Health Status**: COVID_STATUS, COVID_test_status
-- **Medical Conditions**: Diabetes, Asthma, Smoker, Hypertension, Chronic_Lung_Disease, etc.
-- **Symptoms**: Fever, Cough, Sore_Throat, Fatigue, Breathing_Difficulties, etc.
-- **Audio File Paths**: breathing-deep, breathing-shallow, cough-heavy, cough-shallow, counting-fast, counting-normal, vowel-a, vowel-e, vowel-o
-
----
-
-## Project Structure
-
-```
-CoronaHack-Respiratory-Sound-Dataset/
-├── README.md                                    # This file
-├── Corona-Hack-Respiratory-Sound-Metadata.csv  # Main metadata file
-├── junk_archive.tar.gz                         # Archived experimental code and outputs
-│
-├── coding/                                      # Source code
-│   ├── clean.py                                # Data cleaning utilities
-│   ├── filter_audio_quality.py                 # Audio quality filtering
-│   ├── build_clean_features.py                 # Feature extraction pipeline
-│   ├── generate_augmented_train.py             # Data augmentation
-│   ├── generate_model_input_clean.py           # Model input preparation
-│   ├── train_crnn_clean7.py                     # CRNN model (final/main)
-│   └── train_ml_baseline_clean.py              # Baseline ML models
-│
-├── data/                                       # Audio dataset
-│   ├── train/                                  # Training data (organized by date)
-│   └── test/                                   # Testing data (organized by date)
-│
-└── output/                                     # Generated outputs
-    ├── features_train.csv                      # Extracted features (train)
-    ├── features_test.csv                       # Extracted features (test)
-    ├── model_input_clean_train.csv             # Cleaned model input (train)
-    ├── model_input_clean_test.csv              # Cleaned model input (test)
-    │
-    ├── filtered_audio/                         # Quality-filtered audio files
-    │   ├── train/
-    │   └── test/
-    │
-    ├── processed_audio/                        # Preprocessed audio
-    │   ├── train/
-    │   └── test/
-    │
-    ├── processed_audio_clean/                  # Augmented + merged training data
-    │   ├── train/
-    │   └── test/
-    │
-    ├── processed_audio_augmented/              # Augmented audio samples
-    │   └── train/
-    │
-  ├── crnn_model_results_7/                   # CRNN Model Results (V7 - Final)
-  │   ├── best_crnn_focal_biGRU_v7.keras      # Best model weights (V7)
-  │   ├── training_curves_crnn_focal_biGRU_v7.png
-  │   ├── roc_curve_crnn_focal_biGRU_v7.png
-  │   ├── pr_curve_crnn_focal_biGRU_v7.png
-  │   ├── test_predictions_f1opt_v7.csv       # Model predictions on test set
-  │   └── report.ipynb
-  │
-    └── filter_log.csv                          # Audio quality filtering log
-```
-
----
-
-## Key Components
-
-### 1. **Data Preprocessing** (`coding/clean.py`)
-- Validates and cleans metadata
-- Handles missing values
-- Ensures data consistency
-
-### 2. **Audio Quality Filtering** (`coding/filter_audio_quality.py`)
-- Filters audio files based on quality metrics
-- Removes corrupted or low-quality samples
-- Outputs quality filtering log
-
-### 3. **Feature Extraction** (`coding/build_clean_features.py`)
-- Extracts audio features using librosa
-- Creates feature CSVs for model input
-- Combines raw and augmented audio data
-
-### 4. **Data Augmentation** (`coding/generate_augmented_train.py`)
-- Applies augmentation techniques to training data
-- Increases dataset diversity
-- Logs augmentation operations
-
-### 5. **Model Input Generation** (`coding/generate_model_input_clean.py`)
-- Merges features with metadata
-- Prepares input for ML/DL models
-- Handles class balancing
-
--### 6. **Model Training**
-
-#### CRNN Model (`coding/train_crnn_clean7.py`)
-- Final Convolutional Recurrent Neural Network used for reported results
-- **Model (V7)**: results for the training run are in `output/crnn_model_results_7/`
-- Features:
-  - Bidirectional GRU layers for temporal modeling
-  - Focal loss for handling class imbalance
-  - Early stopping and model checkpointing
-
-#### Baseline ML (`coding/train_ml_baseline_clean.py`)
-- Traditional ML classifiers for comparison:
-  - Logistic Regression
-  - Random Forest
-  - SVM
-  - Gradient Boosting
-
-### 7. **Results & Evaluation**
-- ROC curves showing model discrimination ability
-- Precision-Recall curves for different thresholds
-- Training curves showing convergence
-- Classification reports with F1, precision, recall scores
-
----
-
-## Data Processing Pipeline
-
-### Step 1: Data Collection
-Raw audio files organized by collection date under `data/train/` and `data/test/`
-
-### Step 2: Quality Filtering
-- Audio files filtered based on quality metrics
-- Output: `output/filtered_audio/`
-
-### Step 3: Audio Preprocessing
-- Normalization and standardization
-- Output: `output/processed_audio/`
-
-### Step 4: Feature Extraction
-- Convert audio signals to numerical features
-- Output: `features_train.csv`, `features_test.csv`
-
-### Step 5: Data Augmentation (Training Only)
-- Create synthetic variations of training data
-- Output: `output/processed_audio_augmented/`
-
-### Step 6: Merge & Clean
-- Combine original + augmented training data
-- Merge with metadata
-- Output: `model_input_clean_train.csv`, `model_input_clean_test.csv`
-
-### Step 7: Model Training & Evaluation
-- Train CRNN and baseline models
-- Generate predictions and evaluation metrics
-- Output: Model files, ROC/PR curves, test predictions
-
----
-
-## Model Training
-
-### CRNN Model (Final - V7)
-
-**Location**: `output/crnn_model_results_7/`
-
-**Architecture**:
-- Convolutional layers for spatial feature extraction
-- Bidirectional GRU for temporal sequence modeling
-- Dense layers for classification
-
-**Training Parameters**:
-- Loss function: Focal loss (handles class imbalance)
-- Optimizer: Adam
-- Batch size: 32 (typical)
-- Early stopping: Yes
-- Class weights: Computed automatically
-
-**Key Files** (example contents):
-- `best_crnn_focal_biGRU_v7.keras` (model weights)
-- `training_curves_crnn_focal_biGRU_v7.png` (loss/accuracy)
-- `roc_curve_crnn_focal_biGRU_v7.png` (ROC curve)
-- `pr_curve_crnn_focal_biGRU_v7.png` (PR curve)
-- `test_predictions_f1opt_v7.csv` (test predictions)
-- `report.ipynb` (analysis notebook)
-
-### Baseline Models
-
-**Location**: Output from `train_ml_baseline_clean.py`
-
-**Models Included**:
-- Logistic Regression
-- Random Forest
-- Support Vector Machines (SVM)
-- Gradient Boosting
-
----
-
-## Results
-
-### CRNN Model V7 Highlights
-
-- **Input**: Audio spectral features + augmented training data
-- **Output**: Binary classification (COVID / Not COVID)
-- **Evaluation Metrics**: 
-  - ROC-AUC score
-  - Precision, Recall, F1-score
-  - Confusion matrix
-  
-**Visualization Outputs**:
-- Training convergence curves
-- ROC curve (model discrimination)
-- PR curve (precision vs recall trade-off)
-- Test set predictions with optimal F1 threshold
-
-### Model Comparison
-
-Baseline ML models provide performance baseline for comparing CRNN effectiveness.
-
----
-
-## Dependencies
-
-The project requires the following Python libraries:
-
-```
-numpy
-pandas
-scikit-learn
-librosa
-tensorflow
-keras
-tqdm
-matplotlib
-seaborn
-```
-
-### Installation
-
-```bash
-# Create (if needed) and activate a venv, then install requirements
+```sh
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-## Demo (Streamlit)
-
-A lightweight Streamlit demo is provided to run inference with the V7 CRNN model locally. The demo auto-detects trained PyTorch model files under `output/` (it looks for `crnn_cough.pt` or any `.pt` file) and will prefer a user-uploaded `.pt` model if provided via the UI. The app uses the same feature-extraction pipeline as `coding/build_clean_features.py` and derives imputer/scaler stats from `output/model_input_clean_train.csv` so preprocessing matches training.
-
-Quick start (recommended, run from project root):
-
-1. Activate the project's venv (if not already active):
-
-```bash
-source .venv/bin/activate
-```
-
-2. Install demo dependencies (if you didn't already):
-
-```bash
-pip install -r requirements.txt
-```
-
-3. Run the demo:
-
-```bash
+python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Notes:
-- Place model files (e.g. `crnn_cough.pt`) under the `output/` folder (the app will search and pick the newest `.pt` automatically). Alternatively upload a `.pt` file in the web UI.
-- Model binaries are intentionally not tracked in git. If you want to include a model in the repo (not recommended for large files), add it and commit — otherwise keep them local or host in cloud storage and download at runtime.
+The app displays aggregate results and existing curves. It does not upload audio or participant information, and it does not make diagnostic predictions.
 
-Docker (optional)
+## Model and feature contract
 
-Build and run the demo in Docker (the image does not include model binaries):
+The documented run is `coding/train_crnn_clean5.py`, with outputs under `output/crnn_model_results_5/` (the filenames call this **v2**). Its Keras model has two Conv1D blocks, a bidirectional GRU, and a sigmoid classifier; training uses focal loss, SMOTE, and class weights.
 
-```bash
-# build image
-docker build -t coronahack-demo:latest .
+Feature extraction averages 13 MFCCs, 12 chroma features, and four spectral/time-domain summaries across each recording. The input-building script joins these 29 acoustic features with metadata. The training script selects **all numeric columns except the target**; the saved report records **49 inputs**. The convolution and GRU therefore operate along an ordered feature vector, not an acoustic time-frame sequence. An audio-only interpretation of the recorded result is not justified.
 
-# run (mount project output so model files are readable inside the container)
-docker run --rm -p 8501:8501 -v $(pwd)/output:/app/output coronahack-demo:latest
+The old demo defined a different PyTorch architecture, expected `.pt` files, and supplied only 29 audio features. No verified V7 training source or checkpoint exists in the current tracked tree. That incompatible path and its unsupported static prediction have been removed. Renaming `.keras` to `.pt` is not a conversion.
+
+For a trusted local checkpoint produced by the Keras training code:
+
+```sh
+python -m pip install -r requirements-training.txt
+python scripts/test_model_load.py /path/to/best_crnn_focal_biGRU_v2.keras --features 49
 ```
 
-Open http://localhost:8501 after the container starts
+This checks loading and tensor shapes using `compile=False`; it does not establish preprocessing compatibility or model accuracy. No checkpoint is bundled. Before restoring inference, export the exact feature order and fitted scaler with the matching model, decide how metadata inputs are obtained, and validate the complete pipeline. Do not derive replacement scaling statistics from a different dataset or silently substitute zeros for missing inputs.
 
-## Shareable release (quick way to share the demo)
+## Reproduction scope and next experiment
 
-If you want to share a lightweight copy of this project with other collaborators (without datasets or model binaries), use the bundled release helper script which creates a zip that excludes large files and model weights.
+The historical scripts now resolve project paths relative to their source files. Training dependencies are listed separately in `requirements-training.txt`; the original exact package versions, trained weights, and fitted scaler are not available. The raw-data pipeline has not been rerun in this update.
 
-1. Make the zip (from the repository root):
+With authorized inputs, `python coding/train_crnn_clean5.py` reads `output/model_input_clean_train.csv` and `output/model_input_clean_test.csv` and writes into the historical results directory. **Back up existing evaluation artifacts before rerunning.** This entry point preserves the original experiment, including its methodological limitations; it is not the recommended design for a new evaluation.
 
-```bash
-# create a timestamped zip excluding data/, output/, and model binaries
-./scripts/make_shareable_release.sh
-# or provide a filename
-./scripts/make_shareable_release.sh coronahack-demo-share.zip
+A defensible new experiment should:
+
+1. Define an explicit feature schema and audit numeric metadata for target proxies.
+2. Split by participant before scaling, augmentation, or oversampling; verify participant separation across all partitions.
+3. Fit preprocessing and SMOTE on training data only. The historical script oversamples before `validation_split`, so validation is not cleanly isolated from preprocessing.
+4. Choose a threshold on validation data and evaluate once on untouched test data.
+5. Export the model, fitted preprocessing, feature schema, split definition, seed, environment, and aggregate evaluation together.
+
+These are requirements for a future run, not claims that the current artifacts meet them. The existing run does not establish clinical utility.
+
+## Repository guide
+
+| Location | Purpose |
+| --- | --- |
+| `coding/` | Historical preprocessing, feature generation, CNN/CRNN variants, and baseline experiments |
+| `coding/train_crnn_clean5.py` | Source corresponding to the highlighted v2 artifacts |
+| `output/crnn_model_results_4/` | Earlier saved curves and report |
+| `output/crnn_model_results_5/` | Highlighted report, curves, predictions, and verified aggregate summary |
+| `app.py` | Aggregate results browser |
+| `scripts/` | Metric verification, explicit Keras shape check, and allowlisted release packaging |
+| `tests/` | Metric, artifact, packaging, and missing-checkpoint checks |
+
+The source dataset is identified in the original project as the [Corona Hack Respiratory Sound Dataset](https://www.kaggle.com/datasets/praveengovi/coronahack-respiratory-sound-dataset). Obtain data through its authorized distribution and follow its usage conditions. Do not commit private or restricted recordings, metadata, or uploads. Some metadata and derived tables were already tracked in this repository; adding ignore rules does not remove those historical files.
+
+## Share a lightweight copy
+
+```sh
+bash scripts/make_shareable_release.sh respiratory-results-release.zip
 ```
 
-2. Share the generated zip (`coronahack-demo-share-YYYYMMDD-HHMMSS.zip`) via email, Drive, Dropbox, or upload as a GitHub Release asset.
-
-Notes:
-- The zip intentionally excludes `data/`, `output/`, `*.pt`, `*.pth`, and other large artifacts to keep the package small and privacy-preserving.
-- Instruct recipients how to obtain a model: either copy their own `crnn_cough.pt` into `output/crnn_model_results_7/` or upload a `.pt` via the Streamlit UI after starting the demo.
-- The app will not reveal absolute filesystem paths in the UI; only minimal relative names are displayed.
-
-Docker (recommended for reproducible sharing)
-
-If your collaborators have Docker, it's the easiest way to run the demo without installing Python dependencies.
-
-```bash
-# build the image (on a machine with Docker)
-docker build -t coronahack-demo:latest .
-
-# run the container, mounting local output so model files are visible
-docker run --rm -p 8501:8501 -v $(pwd)/output:/app/output coronahack-demo:latest
-```
-
-Open http://localhost:8501 in the browser after the container starts. The container image does not include model binaries, so mount or add them into `output/` as shown above.
-
-Privacy reminder
-
-- Do not add large or private model files to the zip. If you need to share a model with trusted collaborators, use secure file sharing (S3 with signed URL, private Drive link, or GitHub Releases) and instruct recipients to place the model into `output/crnn_model_results_7/` before running the demo.
+The helper packages only explicitly allowlisted source files and the public v2 evaluation artifacts. It excludes dataset directories, participant metadata tables, local models, uploads, archives, and Git history; it refuses to overwrite an existing archive. The unused `junk_archive.tar.gz` was removed from the current tree and remains recoverable through Git history.

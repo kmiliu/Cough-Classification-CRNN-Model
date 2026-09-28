@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 import io
 import numpy as np
@@ -11,9 +12,9 @@ from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.optimizers import Adam
 
 # === Paths ===
-TRAIN_CSV = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_input_clean_train.csv"
-TEST_CSV = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_input_clean_test.csv"
-SAVE_MODEL_PATH = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output/model_results/cnn_baseline.keras"
+TRAIN_CSV = str(Path(__file__).resolve().parents[1] / 'output/model_input_clean_train.csv')
+TEST_CSV = str(Path(__file__).resolve().parents[1] / 'output/model_input_clean_test.csv')
+SAVE_MODEL_PATH = str(Path(__file__).resolve().parents[1] / 'output/model_results/cnn_baseline.keras')
 
 # === Safe CSV loader ===
 def safe_read_csv(path):

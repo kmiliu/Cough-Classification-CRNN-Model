@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 import shutil
 import librosa
@@ -6,7 +7,7 @@ import pandas as pd
 from tqdm import tqdm
 
 # === 路径设置 ===
-BASE_DIR = "/Users/kemingliu/Desktop/CoronaHack-Respiratory-Sound-Dataset/output"
+BASE_DIR = str(Path(__file__).resolve().parents[1] / 'output')
 RAW_TRAIN = os.path.join(BASE_DIR, "processed_audio/train")
 RAW_TEST = os.path.join(BASE_DIR, "processed_audio/test")
 AUG_TRAIN = os.path.join(BASE_DIR, "processed_audio_augmented/train")
